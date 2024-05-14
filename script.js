@@ -45,8 +45,15 @@ if (designContainer) {
 
 $(document).ready(function () {
     $("#image-selector").hide();
+    $("#edit-text").hide();
+    setText()
     $("#image-upload").click(function () {
         $("#image-selector").show();
+        $("#create-your-design").hide();
+    });
+
+    $("#design-text").click(function () {
+        $("#edit-text").show();
         $("#create-your-design").hide();
     });
 
@@ -54,4 +61,31 @@ $(document).ready(function () {
         $("#image-selector").hide();
         $("#create-your-design").show();
     })
+    $("#back-edit-text").click(function () {
+        $("#edit-text").hide();
+        $("#create-your-design").show();
+    })
 });
+
+
+function setText() {
+    const toolbarOptions = [
+        [{ 'size': ['small', false, 'large', 'huge'] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'align': [] }],
+        ['clean'],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'font': [] }],
+    ];
+    const quill = new Quill('#text-editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: toolbarOptions
+        },
+        placeholder: 'Typing here...',
+        formats: [
+            'size', 'bold', 'italic', 'underline', 'strike', 'align', 'clean', 'color', 'background', 'font'
+        ],
+    });
+
+}

@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.2/fabric.min.js"></script>
-    <script src=”https://cdnjs.cloudflare.com/ajax/libs/fabric.js/2.3.6/fabric.min.js”></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 </head>
 
 <body>
@@ -74,7 +75,7 @@
                             </div>
                             <i class="fas fa-chevron-right"></i>
                         </div>
-                        <div class="card p-4">
+                        <div id="design-text" class="card p-4">
                             <div class="d-flex">
                                 <div class="pr-4">
                                     <i class="fas fa-font" style="font-size: 20px;"></i>
@@ -122,6 +123,17 @@
                     </div>
                     <p class="note mt-2">Note: Your uploaded artwork is safe, secure, and remains your property.</p>
                 </div>
+
+                <!-- design Text Page -->
+                <div id='edit-text'>
+                    <div class="d-flex align-items-center mt-3 mb-3">
+                        <i id="back-edit-text" class="fas fa-arrow-left mr-3"
+                            style="font-size: 22px; cursor: pointer;"></i>
+                        <h5 class="m-0 p-0">Edit Text</h5>
+                    </div>
+                    <div id="text-editor"></div>
+                </div>
+
             </div>
         </div>
     </div>
