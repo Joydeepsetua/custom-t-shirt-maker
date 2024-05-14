@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-Shirt</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.2/fabric.min.js"></script>
+    <script src=”https://cdnjs.cloudflare.com/ajax/libs/fabric.js/2.3.6/fabric.min.js”></script>
+</head>
+
+<body>
+    <div class="container-fluid p-4">
+        <div class="row">
+            <!-- Left side bar -->
+            <div class="col-1 first-col">
+                <div class="sidebar-icons">
+                    <div class="mb-2">
+                        <div class="sidebar-icon">
+                            <img src="./images/rotate.png" alt="" height="25">
+                            <span>SIDE</span>
+                        </div>
+                        <div class="sidebar-icon">
+                            <img src="./images/select-all.png" alt="" height="25">
+                            <span>SELECT ALL</span>
+                        </div>
+                        <div class="sidebar-icon">
+                            <i class="fas fa-eraser"></i>
+                            <span>CLEAR</span>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="sidebar-icon">
+                            <img src="./images/undo.png" alt="" height="25">
+                            <span>UNDO</span>
+                        </div>
+                        <div class="sidebar-icon">
+                            <img src="./images/redo.png" alt="" height="25">
+                            <span>REDO</span>
+                        </div>
+                    </div>
+                    <div class="sidebar-icon">
+                        <!-- <i class="fas fa-search-minus"></i> -->
+                        <i class="fas fa-search-plus"></i>
+                        <span>ZOOM</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 second-col">
+                <img src="./images/t-shirt.png" alt="">
+                <div id="design-container">
+                    <canvas id="canvas" height="176" width="176"></canvas>
+                </div>
+            </div>
+
+
+            <div class="col-5 third-col pl-5">
+                <!-- Create your design Page -->
+                <div id="create-your-design">
+                    <h5>Create your design</h5>
+                    <span>Get started by choosing one of the actions below.</span>
+                    <div>
+                        <div id="image-upload" class="card p-4">
+                            <div class="d-flex">
+                                <div class="pr-4">
+                                    <i class="fas fa-cloud-upload-alt" style="font-size: 20px;"></i>
+                                </div>
+                                <h6>Upload Image</h6>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="card p-4">
+                            <div class="d-flex">
+                                <div class="pr-4">
+                                    <i class="fas fa-font" style="font-size: 20px;"></i>
+                                </div>
+                                <h6 class="p-0 m-0">Add Text</h6>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="card p-4">
+                            <div class="d-flex " style="justify-content: center; align-items: center;">
+                                <div class="pr-4">
+                                    <i class="fas fa-image" style="font-size: 20px;"></i>
+                                </div>
+                                <h6 class="p-0 m-0">Add Art</h6>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Upload Image page -->
+                <div id='image-selector'>
+                    <div class="upload-info">
+                        <div class="d-flex align-items-center mt-3 mb-3">
+                            <i id="back-image-selector" class="fas fa-arrow-left mr-3"
+                                style="font-size: 22px; cursor: pointer;"></i>
+                            <h5 class="m-0 p-0">Upload Image</h5>
+                        </div>
+                        <p>By uploading your artwork you agree to our image upload terms and acknowledge that you have
+                            full
+                            legal rights to use the images you upload.</p>
+                        <p>Recommended file formats: <span class="highlight">SVG, PNG, JPG, JPEG, GIF</span>
+                        </p>
+                        <p>Maximum upload file size: <span class="highlight">25 MB</span></p>
+                    </div>
+
+                    <div class="file-drop-area">
+                        <div class="file-drop-content">
+                            <h6>Drag and drop file here</h6>
+                            <p>or</p>
+                            <button onclick="" id="selectFileBtn">SELECT FILE</button>
+                            <input type="file" id="imagePicker" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+                    <p class="note mt-2">Note: Your uploaded artwork is safe, secure, and remains your property.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
