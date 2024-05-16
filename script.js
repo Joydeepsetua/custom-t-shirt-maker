@@ -1,6 +1,8 @@
 const selectFileBtn = document.getElementById('selectFileBtn');
 const fileInput = document.getElementById('imagePicker');
 const designContainer = document.getElementById('design-container');
+const letterSpacing = document.getElementById("letter-spacing");
+const textOutline = document.getElementById("text-outline");
 const canva = document.getElementById('canvas');
 var canvas = new fabric.Canvas(canva);
 var textbox = new fabric.Textbox("", { top: 10, left: 10, fontSize: 14 });
@@ -46,7 +48,7 @@ if (designContainer) {
 
 $(document).ready(function () {
     $("#image-selector").hide();
-    $("#edit-text").hide();
+    // $("#edit-text").hide();
 
     $("#image-upload").click(function () {
         $("#image-selector").show();
@@ -67,6 +69,16 @@ $(document).ready(function () {
         $("#edit-text").hide();
         $("#create-your-design").show();
     })
+});
+
+letterSpacing.addEventListener("input", function () {
+    var value = letterSpacing.value;
+    adjustLetterSpacing(textbox, value);
+});
+
+textOutline.addEventListener("input", function () {
+    var value = textOutline.value;
+    taextOutline(textbox, value);
 });
 
 const toolbarOptions = [
@@ -100,6 +112,7 @@ quill.on('text-change', function (delta, oldDelta, source) {
     console.log('2', attributes2);
 
     if (attributes1.hasOwnProperty('size')) {
+        letterSpacing.value = 1;
         if (attributes1.size === 'small') {
             textbox.set('fontSize', 10);
         } else if (attributes1.size === 'large') {
@@ -149,7 +162,8 @@ quill.on('text-change', function (delta, oldDelta, source) {
 // adjustLetterSpacing(textbox, 10);
 function adjustLetterSpacing(ref, letterSpacing) {
     var newText = "";
-    var textArray = ref.text.split("");
+    const text = quill.getContents();
+    var textArray = text.ops[0].insert.split("");
     textArray.forEach(function (char, index) {
         newText += char + "\u200A".repeat(letterSpacing); // Use Unicode thin space character
     });
@@ -157,19 +171,22 @@ function adjustLetterSpacing(ref, letterSpacing) {
     canvas.renderAll();
 }
 
-function aextOutline(ref, width) {
-    // textbox.set('stroke', 'black');
-    textbox.set('strokeWidth', width);
+function taextOutline(ref, value) {
+    ref.set('stroke', 'black');
+    ref.set('strokeWidth', value);
+    canvas.renderAll();
 }
 
 function textFlipX(ref, value) {
     // Flip horizontally
     ref.set('flipX', true);
+    canvas.renderAll();
 }
 
 function textFlipY(ref, value) {
     // Flip vertically
     ref.set('flipY', true);
+    canvas.renderAll();
 }
 function duplicate(ref) {
     canvas.add(textbox);
