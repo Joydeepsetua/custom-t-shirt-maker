@@ -131,9 +131,13 @@ quill.on('text-change', function (delta, oldDelta, source) {
     // }
     if (attributes1.hasOwnProperty('color')) {
         textbox.set('fill', attributes1.color);
+    } else {
+        textbox.set('fill', '#000');
     }
     if (attributes1.hasOwnProperty('background')) {
         textbox.set('backgroundColor', attributes1.background);
+    } else {
+        textbox.set('backgroundColor', '');
     }
     if (attributes1.hasOwnProperty('font')) {
         console.log(attributes1.font);
