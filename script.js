@@ -123,12 +123,6 @@ quill.on('text-change', function (delta, oldDelta, source) {
     } else {
         textbox.set('fontStyle', 'normal');
     }
-    // if (attributes1.hasOwnProperty('underline') || attributes1.underline) {
-    //     textbox.set('textDecoration', 'underline');
-    // }
-    // if (attributes1.hasOwnProperty('strike') || attributes1.strike) {
-    //     textbox.set('textDecoration', 'line-through');
-    // }
     if (attributes1.hasOwnProperty('color')) {
         textbox.set('fill', attributes1.color);
     } else {
@@ -151,6 +145,37 @@ quill.on('text-change', function (delta, oldDelta, source) {
 
     canvas.renderAll();
 });
+
+// adjustLetterSpacing(textbox, 10);
+function adjustLetterSpacing(ref, letterSpacing) {
+    var newText = "";
+    var textArray = ref.text.split("");
+    textArray.forEach(function (char, index) {
+        newText += char + "\u200A".repeat(letterSpacing); // Use Unicode thin space character
+    });
+    ref.set("text", newText);
+    canvas.renderAll();
+}
+
+function aextOutline(ref, width) {
+    // textbox.set('stroke', 'black');
+    textbox.set('strokeWidth', width);
+}
+
+function textFlipX(ref, value) {
+    // Flip horizontally
+    ref.set('flipX', true);
+}
+
+function textFlipY(ref, value) {
+    // Flip vertically
+    ref.set('flipY', true);
+}
+function duplicate(ref) {
+    canvas.add(textbox);
+    ref.set('top', 10);
+    ref.set('left', 10);
+}
 // quill.on('selection-change', (range, oldRange, source) => {
 //     if (range) {
 //       if (range.length == 0) {
