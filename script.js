@@ -7,6 +7,8 @@ const canva = document.getElementById('canvas');
 var canvas = new fabric.Canvas(canva);
 var textbox = new fabric.Textbox("", { top: 10, left: 10, fontSize: 14 });
 
+var xFlip = false;
+var yFlip = false;
 
 if (designContainer) {
     selectFileBtn.addEventListener('click', () => {
@@ -177,15 +179,17 @@ function taextOutline(ref, value) {
     canvas.renderAll();
 }
 
-function textFlipX(ref, value) {
+function textFlipX() {
     // Flip horizontally
-    ref.set('flipX', true);
+    textbox.set('flipX', !xFlip);
+    xFlip = !xFlip;
     canvas.renderAll();
 }
 
-function textFlipY(ref, value) {
+function textFlipY() {
     // Flip vertically
-    ref.set('flipY', true);
+    textbox.set('flipY', !yFlip);
+    yFlip = !yFlip;
     canvas.renderAll();
 }
 function duplicate(ref) {
