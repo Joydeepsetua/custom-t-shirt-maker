@@ -50,7 +50,7 @@ if (designContainer) {
 
 $(document).ready(function () {
     $("#image-selector").hide();
-    // $("#edit-text").hide();
+    $("#edit-text").hide();
 
     $("#image-upload").click(function () {
         $("#image-selector").show();
