@@ -24,7 +24,8 @@
             <div class="col-1 first-col">
                 <div class="sidebar-icons">
                     <div class="mb-2">
-                        <div class="sidebar-icon" data-toggle="modal" data-target="#exampleModalCenter">
+                        <div class="sidebar-icon" data-toggle="modal" data-target="#exampleModalCenter"
+                            onclick="renderTshirts()">
                             <img src="./images/rotate.png" alt="" height="25">
                             <span>SIDE</span>
                         </div>
@@ -189,32 +190,7 @@
                     <div class="modal-body justify-content-start">
                         <small>Click on the side and print location you would like to decorate. You can only choose one
                             location per side.</small><br>
-                        <div>
-                            <div class="card pl-2 card-item" style="width: fit-content;">
-                                <div style="display: flex; flex-direction: column;">
-                                    <strong>Front</strong>
-                                    <img src="./images/t-shirt.png" alt="" style="height: 200px;" />
-                                </div>
-                            </div>
-                            <div class="card pl-2 card-item" style="width: fit-content;">
-                                <div style="display: flex; flex-direction: column;">
-                                    <strong>Back</strong>
-                                    <img src="./images/t-shirt-back.png" alt="" style="height: 200px;" />
-                                </div>
-                            </div>
-                            <div class="card pl-2 card-item" style="width: fit-content;">
-                                <div style="display: flex; flex-direction: column;">
-                                    <strong>Left Sleeve</strong>
-                                    <img src="./images/t-shirt-left.png" alt="" style="height: 200px;" />
-                                </div>
-                            </div>
-                            <div class="card pl-2 card-item" style="width: fit-content;">
-                                <div style="display: flex; flex-direction: column;">
-                                    <strong>Right Sleeve</strong>
-                                    <img src="./images/t-shirt-right.png" alt="" style="height: 200px;" />
-                                </div>
-                            </div>
-                        </div>
+                        <div id='tshirt-container'></div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

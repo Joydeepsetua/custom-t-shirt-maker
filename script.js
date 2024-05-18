@@ -7,6 +7,37 @@ const canva = document.getElementById('canvas');
 var canvas = new fabric.Canvas(canva);
 var textbox = new fabric.Textbox("", { top: 10, left: 10, fontSize: 14 });
 
+const tshirtList = [
+    {
+        title: 'Front',
+        image: './images/t-shirt.png',
+        containerHeight: '',
+        containerWeight: '',
+        position: ''
+    },
+    {
+        title: 'Back',
+        image: './images/t-shirt-back.png',
+        containerHeight: '',
+        containerWeight: '',
+        position: ''
+    },
+    {
+        title: 'Left Sleeve',
+        image: './images/t-shirt-left.png',
+        containerHeight: '',
+        containerWeight: '',
+        position: ''
+    },
+    {
+        title: 'Right Sleeve',
+        image: './images/t-shirt-right.png',
+        containerHeight: '',
+        containerWeight: '',
+        position: ''
+    },
+]
+
 var xFlip = false;
 var yFlip = false;
 
@@ -209,3 +240,24 @@ function duplicate(ref) {
 //       console.log('Cursor not in the editor');
 //     }
 //   });
+
+function renderTshirts() {
+    const container = document.getElementById('tshirt-container');
+
+    tshirtList.forEach(tshirt => {
+        const card = document.createElement('div');
+        card.className = 'card pl-2 card-item';
+        card.style.width = 'fit-content';
+
+        const content = `
+            <div style="display: flex; flex-direction: column;">
+                <strong>${tshirt.title}</strong>
+                <img src="${tshirt.image}" alt="${tshirt.title}" style="height: 200px;" />
+            </div>
+        `;
+
+        card.innerHTML = content;
+        container.appendChild(card);
+    });
+}
+
