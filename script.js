@@ -12,29 +12,29 @@ const tshirtList = [
     {
         title: 'Front',
         image: './images/t-shirt.png',
-        containerHeight: '',
-        containerWeight: '',
+        containerHeight: '180px',
+        containerWeight: '180px',
         position: ''
     },
     {
         title: 'Back',
         image: './images/t-shirt-back.png',
-        containerHeight: '',
-        containerWeight: '',
+        containerHeight: '180px',
+        containerWeight: '180px',
         position: ''
     },
     {
         title: 'Left Sleeve',
         image: './images/t-shirt-left.png',
-        containerHeight: '',
-        containerWeight: '',
+        containerHeight: '85px',
+        containerWeight: '85px',
         position: ''
     },
     {
         title: 'Right Sleeve',
         image: './images/t-shirt-right.png',
-        containerHeight: '',
-        containerWeight: '',
+        containerHeight: '85px',
+        containerWeight: '85px',
         position: ''
     },
 ]
@@ -266,4 +266,7 @@ function renderTshirts() {
 
 function insertImageAstshirtEditor(item) {
     imageElement.src = item.image;
+    $('#exampleModalCenter').modal('hide');
+    designContainer.style.height = item.containerHeight;
+    designContainer.style.width = item.containerWeight;
 }

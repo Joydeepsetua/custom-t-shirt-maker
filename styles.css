@@ -17,8 +17,7 @@ body {}
     position: absolute;
     top: 18%;
     border: 2px solid red;
-    height: 240px;
-    width: 240px;
+    overflow: hidden;
 }
 
 .sidebar-icons {
