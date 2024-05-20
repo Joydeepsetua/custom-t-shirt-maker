@@ -4,6 +4,7 @@ const designContainer = document.getElementById('design-container');
 const letterSpacing = document.getElementById("letter-spacing");
 const textOutline = document.getElementById("text-outline");
 const canva = document.getElementById('canvas');
+const imageElement = document.getElementById('image-element');
 var canvas = new fabric.Canvas(canva);
 var textbox = new fabric.Textbox("", { top: 10, left: 10, fontSize: 14 });
 
@@ -82,6 +83,8 @@ if (designContainer) {
 $(document).ready(function () {
     $("#image-selector").hide();
     $("#edit-text").hide();
+    renderTshirts()
+    insertImageAstshirtEditor(tshirtList[0])
 
     $("#image-upload").click(function () {
         $("#image-selector").show();
@@ -141,8 +144,8 @@ quill.on('text-change', function (delta, oldDelta, source) {
 
     var attributes1 = text?.ops[0]?.attributes || {};
     var attributes2 = text?.ops[1]?.attributes || {};
-    console.log('1', attributes1);
-    console.log('2', attributes2);
+    // console.log('1', attributes1);
+    // console.log('2', attributes2);
 
     if (attributes1.hasOwnProperty('size')) {
         letterSpacing.value = 1;
@@ -248,9 +251,9 @@ function renderTshirts() {
         const card = document.createElement('div');
         card.className = 'card pl-2 card-item';
         card.style.width = 'fit-content';
-
+        const tshirtData = JSON.stringify(tshirt).replace(/"/g, '&quot;');
         const content = `
-            <div style="display: flex; flex-direction: column;">
+            <div style="display: flex; flex-direction: column;" onclick="insertImageAstshirtEditor(${tshirtData})">
                 <strong>${tshirt.title}</strong>
                 <img src="${tshirt.image}" alt="${tshirt.title}" style="height: 200px;" />
             </div>
@@ -261,3 +264,6 @@ function renderTshirts() {
     });
 }
 
+function insertImageAstshirtEditor(item) {
+    imageElement.src = item.image;
+}
