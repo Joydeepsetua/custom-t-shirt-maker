@@ -24,8 +24,7 @@
             <div class="col-1 first-col">
                 <div class="sidebar-icons">
                     <div class="mb-2">
-                        <div class="sidebar-icon" data-toggle="modal" data-target="#exampleModalCenter"
-                            onclick="">
+                        <div class="sidebar-icon" data-toggle="modal" data-target="#exampleModalCenter" onclick="">
                             <img src="./images/rotate.png" alt="" height="25">
                             <span>SIDE</span>
                         </div>
@@ -88,7 +87,7 @@
                             </div>
                             <i class="fas fa-chevron-right"></i>
                         </div>
-                        <div class="card p-4">
+                        <div id="art-upload" class="card p-4">
                             <div class="d-flex " style="justify-content: center; align-items: center;">
                                 <div class="pr-4">
                                     <i class="fas fa-image" style="font-size: 20px;"></i>
@@ -170,6 +169,25 @@
                         <!-- <div id="duplicate" class="m-2"  style="cursor: pointer;">
                             <i class="far fa-copy" style="font-size: x-large;"></i>
                         </div> -->
+                    </div>
+                </div>
+
+                <!-- Art page -->
+                <div id='art-selector'>
+                    <div class="upload-info">
+                        <div class="d-flex align-items-center mt-3 mb-3">
+                            <i id="back-art-selector" class="fas fa-arrow-left mr-3"
+                                style="font-size: 22px; cursor: pointer;"></i>
+                            <h5 class="m-0 p-0">Clip Art</h5>
+                        </div>
+                    </div>
+
+                    <div class="">
+                        <div id="categories" style="margin-bottom: 20px;">
+                            <strong id='categories-text' onclick="onClickCategoryText()">Categories</strong>
+                        </div>
+                        <div id="art-category"></div>
+                        <div id="clip-art-images"></div>
                     </div>
                 </div>
 

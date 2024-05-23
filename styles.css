@@ -96,6 +96,7 @@ body {}
 .upload-info {
     background-color: #fff;
     text-align: center;
+    margin-bottom: 30px;
 }
 
 .upload-info p {

@@ -7,6 +7,7 @@ const canva = document.getElementById('canvas');
 const imageElement = document.getElementById('image-element');
 var canvas = new fabric.Canvas(canva);
 var textbox = new fabric.Textbox("", { top: 10, left: 10, fontSize: 14 });
+const categoryTextElement = document.getElementById('categories-text');
 
 const tshirtList = [
     {
@@ -38,7 +39,23 @@ const tshirtList = [
         position: ''
     },
 ]
-
+const artList = {
+    lion: [
+        "./images/art/lion/lion_face.svg",
+        "./images/art/lion/lion-svgrepo-com.svg",
+        "./images/art/lion/lion-svgrepo.svg",
+    ],
+    cat: [
+        "./images/art/cat/husky-svgrepo-com.svg",
+        "./images/art/cat/cat-svgrepo-com.svg",
+        "./images/art/cat/cat-4-svgrepo-com.svg",
+    ],
+    dog: [
+        "./images/art/dog/cardiogram-dog-svgrepo-com.svg",
+        "./images/art/dog/dog-face-svgrepo-com.svg",
+        "./images/art/dog/dog-svgrepo-com.svg",
+    ],
+}
 var xFlip = false;
 var yFlip = false;
 
@@ -83,8 +100,10 @@ if (designContainer) {
 $(document).ready(function () {
     $("#image-selector").hide();
     $("#edit-text").hide();
+    $("#art-selector").hide();
     renderTshirts()
     insertImageAstshirtEditor(tshirtList[0])
+    renderArtCategories()
 
     $("#image-upload").click(function () {
         $("#image-selector").show();
@@ -97,12 +116,21 @@ $(document).ready(function () {
         $("#create-your-design").hide();
     });
 
+    $("#art-upload").click(function () {
+        $("#art-selector").show();
+        $("#create-your-design").hide();
+    });
+
     $("#back-image-selector").click(function () {
         $("#image-selector").hide();
         $("#create-your-design").show();
     })
     $("#back-edit-text").click(function () {
         $("#edit-text").hide();
+        $("#create-your-design").show();
+    })
+    $("#back-art-selector").click(function () {
+        $("#art-selector").hide();
         $("#create-your-design").show();
     })
 });
@@ -269,4 +297,75 @@ function insertImageAstshirtEditor(item) {
     $('#exampleModalCenter').modal('hide');
     designContainer.style.height = item.containerHeight;
     designContainer.style.width = item.containerWeight;
+}
+
+function renderArtCategories() {
+    const container = document.getElementById('art-category');
+
+    Object.keys(artList).forEach(key => {
+        const card = document.createElement('div');
+        const content = `
+            <p class="p-0 m-0" style="font-size: 16px; cursor: pointer; color:blue" onclick="onClickCategoryName('${key}')">${key}</p>
+        `;
+        card.innerHTML = content;
+        container.appendChild(card);
+    });
+}
+
+function onClickCategoryName(category) {
+    $("#art-category").hide();
+    $("#clip-art-images").show();
+    const categoryElement = document.getElementById('categories');
+    categoryTextElement.style.color = 'blue';
+    categoryTextElement.style.cursor = 'pointer';
+    categoryTextElement.style.textDecoration = 'underline';
+    const content = document.createElement('strong');
+    content.innerText = ` / ${category}`;
+    categoryElement.appendChild(content);
+    const container = document.getElementById('clip-art-images');
+    artList[category].forEach(art => {
+        const card = document.createElement('div');
+        const content = `
+            <img src="${art}" alt="${art}" style="height: 80px; margin:10px; cursor: pointer;" onclick="addArtInContainer('${art}')" />
+        `;
+
+        card.innerHTML = content;
+        container.appendChild(card);
+    });
+}
+
+function onClickCategoryText() {
+    $("#art-category").show();
+    $("#clip-art-images").hide();
+    const list = document.getElementById("categories");
+    const clipArtcontainer = document.getElementById('clip-art-images');
+    if (list.hasChildNodes()) {
+        list.removeChild(list.children[1]);
+    }
+    clipArtcontainer.innerHTML = '';
+    categoryTextElement.style.color = 'black';
+    categoryTextElement.style.cursor = '';
+    categoryTextElement.style.textDecoration = 'none';
+}
+
+function addArtInContainer(file) {
+    fabric.Image.fromURL(file, function (img) {
+        img.set({
+            left: 10,
+            top: 10,
+            scaleX: 0.2,
+            scaleY: 0.2,
+        });
+        canvas.add(img);
+    });
+}
+
+// delete selected canvas
+function deleteSelectedObject() {
+    const activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        canvas.remove(activeObject);
+        canvas.discardActiveObject();
+        canvas.renderAll();
+    }
 }
