@@ -105,6 +105,52 @@ $(document).ready(function () {
     insertImageAstshirtEditor(tshirtList[0])
     renderArtCategories()
 
+    // summernote
+    $('#summernote').summernote({
+        placeholder: 'Type here...',
+        tabsize: 2,
+        maxHeight: 100,
+        focus: true,
+        callbacks: {
+            onInit: function () {
+                $('#summernote').summernote('code', 'Add text');
+            },
+            onChange: function (contents, $editable) {
+                // Handle content change
+                // console.log('Content has changed:', contents);
+                // console.log('Content has $editable:', $editable);
+                var stylesObject = {};
+                $($editable).find('*').each(function() {
+                    var styles = window.getComputedStyle(this);
+                    stylesObject[this.tagName] = {};
+                    for (var i = 0; i < styles.length; i++) {
+                        var styleName = styles[i];
+                        stylesObject[this.tagName][styleName] = styles.getPropertyValue(styleName);
+                    }
+                });
+                var fontSize = window.getComputedStyle($editable[0]).getPropertyValue('font-size');
+                console.log('Font Size:', fontSize);
+                // Log the styles object
+                console.log('Styles Object:', stylesObject);
+                console.log('Styles Object:', stylesObject?.SPAN?.fontSize);
+            },
+        },
+        toolbar: [
+            ['font', ['fontname']],
+            ['fontsize', ['fontsize']],
+            ['para', ['paragraph']],
+            ['color', ['color']],
+            ['height', ['height']],
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+        ],
+        fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica', 'Impact', 'Lucida Grande', 'Tahoma', 'Times New Roman', 'Verdana'],  // Customize the fonts here
+        fontNamesIgnoreCheck: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica', 'Impact', 'Lucida Grande', 'Tahoma', 'Times New Roman', 'Verdana']  // To avoid font validation issues
+    });
+    $('#summernote').on('summernote.change', function(we, contents, $editable) {
+        console.log('summernote\'s content is changed.', we);
+      });
+      
+
     $("#image-upload").click(function () {
         $("#image-selector").show();
         $("#create-your-design").hide();
