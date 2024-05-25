@@ -8,34 +8,47 @@ const imageElement = document.getElementById('image-element');
 var canvas = new fabric.Canvas(canva);
 var textbox = new fabric.Textbox("", { top: 10, left: 10, fontSize: 14 });
 const categoryTextElement = document.getElementById('categories-text');
-
+const canvasStates = {};
+var currentSide = '';
 const tshirtList = [
     {
         title: 'Front',
+        key: 'front',
         image: './images/t-shirt.png',
-        containerHeight: '180px',
-        containerWeight: '180px',
+        containerStyleHeight: '180px',
+        containerStyleWidth: '180px',
+        containerWidth: 180,
+        containerHeight: 180,
         position: ''
     },
     {
         title: 'Back',
+        key: 'back',
         image: './images/t-shirt-back.png',
-        containerHeight: '180px',
-        containerWeight: '180px',
+        containerStyleHeight: '180px',
+        containerStyleWidth: '180px',
+        containerWidth: 180,
+        containerHeight: 180,
         position: ''
     },
     {
         title: 'Left Sleeve',
+        key: 'left',
         image: './images/t-shirt-left.png',
-        containerHeight: '85px',
-        containerWeight: '85px',
+        containerStyleHeight: '85px',
+        containerStyleWidth: '85px',
+        containerWidth: 85,
+        containerHeight: 85,
         position: ''
     },
     {
         title: 'Right Sleeve',
+        key: 'right',
         image: './images/t-shirt-right.png',
-        containerHeight: '85px',
-        containerWeight: '85px',
+        containerStyleHeight: '85px',
+        containerStyleWidth: '85px',
+        containerWidth: 85,
+        containerHeight: 85,
         position: ''
     },
 ]
@@ -289,14 +302,29 @@ function renderTshirts() {
 
         card.innerHTML = content;
         container.appendChild(card);
+        canvasStates[tshirt.key] = null;
     });
 }
-
+function switchCanvas(side) {
+    if (canvasStates[side]) {
+        canvas.loadFromJSON(canvasStates[side], canvas.renderAll.bind(canvas));
+    } else {
+        canvas.clear(); // Clear the canvas if there's no state saved for this side
+    }
+}
+function saveCurrentCanvasState(currentSide) {
+    canvasStates[currentSide] = JSON.stringify(canvas);
+}
 function insertImageAstshirtEditor(item) {
+    if (currentSide) {
+        saveCurrentCanvasState(currentSide);
+    }
+    currentSide = item.key;
     imageElement.src = item.image;
     $('#exampleModalCenter').modal('hide');
-    designContainer.style.height = item.containerHeight;
-    designContainer.style.width = item.containerWeight;
+    designContainer.style.height = item.containerStyleHeight;
+    designContainer.style.width = item.containerStyleWidth;
+    switchCanvas(item.key)
 }
 
 function renderArtCategories() {
