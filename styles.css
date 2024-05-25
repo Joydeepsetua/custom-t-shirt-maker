@@ -120,3 +120,7 @@ body {}
 .card-item{
     border: 2px solid lightgray;
 }
+/* .canvas-container, .lower-canvas{
+    width: 100% !important;
+    height: 100% !important;
+} */

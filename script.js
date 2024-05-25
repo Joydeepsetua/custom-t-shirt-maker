@@ -3,40 +3,43 @@ const fileInput = document.getElementById('imagePicker');
 const designContainer = document.getElementById('design-container');
 const letterSpacing = document.getElementById("letter-spacing");
 const textOutline = document.getElementById("text-outline");
-const canva = document.getElementById('canvas');
 const imageElement = document.getElementById('image-element');
-var canvas = new fabric.Canvas(canva);
 var textbox = new fabric.Textbox("", { top: 10, left: 10, fontSize: 14 });
 const categoryTextElement = document.getElementById('categories-text');
-
+const canvases = {};
+var activeCanvas = 'front';
 const tshirtList = [
     {
         title: 'Front',
+        key: 'front',
         image: './images/t-shirt.png',
         containerHeight: '180px',
-        containerWeight: '180px',
-        position: ''
+        containerWidth: '180px',
+        position: '',
     },
     {
         title: 'Back',
+        key: 'back',
         image: './images/t-shirt-back.png',
         containerHeight: '180px',
-        containerWeight: '180px',
-        position: ''
+        containerWidth: '180px',
+        position: '',
     },
     {
         title: 'Left Sleeve',
+        key: 'left',
         image: './images/t-shirt-left.png',
         containerHeight: '85px',
-        containerWeight: '85px',
-        position: ''
+        containerWidth: '85px',
+        position: '',
     },
     {
         title: 'Right Sleeve',
+        key: 'right',
         image: './images/t-shirt-right.png',
         containerHeight: '85px',
-        containerWeight: '85px',
-        position: ''
+        containerWidth: '85px',
+        position: '',
     },
 ]
 const artList = {
@@ -76,7 +79,7 @@ if (designContainer) {
                     scaleX: 0.2,
                     scaleY: 0.2,
                 });
-                canvas.add(img);
+                canvases[activeCanvas].add(img)
             });
         });
         reader.readAsDataURL(file);
@@ -111,7 +114,7 @@ $(document).ready(function () {
     });
 
     $("#design-text").click(function () {
-        canvas.add(textbox);
+        canvases[activeCanvas].add(textbox);
         $("#edit-text").show();
         $("#create-your-design").hide();
     });
@@ -220,7 +223,7 @@ quill.on('text-change', function (delta, oldDelta, source) {
         textbox.set('textAlign', attributes2.align);
     }
 
-    canvas.renderAll();
+    canvases[activeCanvas]?.renderAll();
 });
 
 // adjustLetterSpacing(textbox, 10);
@@ -232,30 +235,30 @@ function adjustLetterSpacing(ref, letterSpacing) {
         newText += char + "\u200A".repeat(letterSpacing); // Use Unicode thin space character
     });
     ref.set("text", newText);
-    canvas.renderAll();
+    canvases[activeCanvas].renderAll();
 }
 
 function taextOutline(ref, value) {
     ref.set('stroke', 'black');
     ref.set('strokeWidth', value);
-    canvas.renderAll();
+    canvases[activeCanvas].renderAll();
 }
 
 function textFlipX() {
     // Flip horizontally
     textbox.set('flipX', !xFlip);
     xFlip = !xFlip;
-    canvas.renderAll();
+    canvases[activeCanvas].renderAll();
 }
 
 function textFlipY() {
     // Flip vertically
     textbox.set('flipY', !yFlip);
     yFlip = !yFlip;
-    canvas.renderAll();
+    canvases[activeCanvas].renderAll();
 }
 function duplicate(ref) {
-    canvas.add(textbox);
+    canvases[activeCanvas].add(textbox);
     ref.set('top', 10);
     ref.set('left', 10);
 }
@@ -289,14 +292,34 @@ function renderTshirts() {
 
         card.innerHTML = content;
         container.appendChild(card);
+        const canva = document.createElement('canvas');
+        canva.id = tshirt.key;
+        canva.style.height = tshirt.containerHeight
+        canva.style.width = tshirt.containerWidth
+        // canva.style.display = 'none';
+        designContainer.appendChild(canva);
+        canvases[tshirt.key] = new fabric.Canvas(`${tshirt.key}`);
     });
 }
-
+function switchCanvas(side) {
+    activeCanvas = side;
+    tshirtList.forEach(shirt => {
+        const canvasEl = document.getElementById(`${shirt.key}`);
+        if (shirt.key === side) {
+            // canvasEl.style.display = 'bloc';
+        } else {
+            // canvasEl.style.display = 'none';
+        }
+    });
+}
 function insertImageAstshirtEditor(item) {
+    const canvasEl = document.getElementById(`${item.key}`);
+    canvasEl.style.display = 'block';
     imageElement.src = item.image;
     $('#exampleModalCenter').modal('hide');
     designContainer.style.height = item.containerHeight;
-    designContainer.style.width = item.containerWeight;
+    designContainer.style.width = item.containerWidth;
+    switchCanvas(item.key);
 }
 
 function renderArtCategories() {
@@ -356,16 +379,22 @@ function addArtInContainer(file) {
             scaleX: 0.2,
             scaleY: 0.2,
         });
-        canvas.add(img);
+        canvases[activeCanvas].add(img);
     });
 }
 
 // delete selected canvas
 function deleteSelectedObject() {
-    const activeObject = canvas.getActiveObject();
+    const activeObject = canvases[activeCanvas].getActiveObject();
     if (activeObject) {
-        canvas.remove(activeObject);
-        canvas.discardActiveObject();
-        canvas.renderAll();
+        canvases[activeCanvas].remove(activeObject);
+        canvases[activeCanvas].discardActiveObject();
+        canvases[activeCanvas].renderAll();
     }
+}
+
+function exportData() {
+    // var json = JSON.stringify(canvases[activeCanvas]);
+    // console.log(json);
+    console.log(canvases[activeCanvas].toSVG());
 }
