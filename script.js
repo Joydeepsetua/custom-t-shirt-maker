@@ -111,6 +111,7 @@ if (designContainer) {
 function addTextBox() {
     quill.root.innerHTML = '<p>Add text</p>';
     var newTextbox = new fabric.Textbox("Add text", { top: 10, left: 10, fontSize: 14 });
+    newTextbox.html = '<p>Add text</p>';
     canvas.add(newTextbox);
     textbox = newTextbox;
     renderHistory();
@@ -196,6 +197,7 @@ quill.root.innerHTML = '<p>Add text</p>';
 quill.on('text-change', function (delta, oldDelta, source) {
     const text = quill.getContents();
     if (textbox) {
+        textbox.html = quill.getSemanticHTML();
         textbox.set('text', text.ops[0].insert);
 
         var attributes1 = text?.ops[0]?.attributes || {};
@@ -486,8 +488,31 @@ function editSelectedObject(index) {
     }
 }
 
+function selectAllObjects() {
+    // Get all objects on the canvas
+    var items = canvas.getObjects();
+
+    // If there are no items, return
+    if (items.length === 0) return;
+
+    // Create a new selection
+    var selection = new fabric.ActiveSelection(items, {
+        canvas: canvas
+    });
+
+    // Set the selection as active
+    canvas.setActiveObject(selection);
+    canvas.requestRenderAll();
+}
+function clearCanvas() {
+    // Clear all objects from the canvas
+    canvas.clear();
+    // Optionally, re-render the history or update the UI
+    renderHistory();
+}
+
 function updateQuill(item) {
-    quill.root.innerHTML = `<p>${item.text}</p>`;
+    quill.root.innerHTML = item.html;
 }
 
 // canvas.on('mouse:dblclick', function (options) {
@@ -502,3 +527,58 @@ canvas.on('object:selected', (e) => {
     const selectedObject = e.target;
     selectedObject.bringToFront();
 });
+
+
+
+
+// <------------------------------- Undo - Redo Functionality ------------------------------->
+
+var undoStack = [];
+var redoStack = [];
+var historyLimit = 10; // Optional: Limit the number of states stored
+
+// Save the current state of the canvas
+function saveState() {
+    redoStack = []; // Clear the redo stack whenever a new action is performed
+    const state = JSON.stringify(canvas.toJSON());
+    undoStack.push(state);
+    if (undoStack.length > historyLimit) {
+        undoStack.shift(); // Remove the oldest state if the limit is exceeded
+    }
+}
+
+// Undo the last action
+function undo() {
+    if (undoStack.length > 0) {
+        const currentState = JSON.stringify(canvas.toJSON());
+        redoStack.push(currentState);
+
+        const previousState = undoStack.pop();
+        canvas.loadFromJSON(previousState, function () {
+            canvas.renderAll();
+        });
+        renderHistory();
+    }
+}
+
+// Redo the last undone action
+function redo() {
+    if (redoStack.length > 0) {
+        const currentState = JSON.stringify(canvas.toJSON());
+        undoStack.push(currentState);
+
+        const nextState = redoStack.pop();
+        canvas.loadFromJSON(nextState, function () {
+            canvas.renderAll();
+        });
+        renderHistory();
+    }
+}
+
+// Call saveState whenever an action is performed
+canvas.on('object:added', saveState);
+canvas.on('object:modified', saveState);
+canvas.on('object:removed', saveState);
+
+// Optional: Initial state
+saveState();
