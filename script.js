@@ -353,7 +353,9 @@ function insertImageAstshirtEditor(item) {
     designContainer.style.height = item.containerStyleHeight;
     designContainer.style.width = item.containerStyleWidth;
     switchCanvas(item.key);
-    renderHistory();
+    setTimeout(() => {
+        renderHistory()
+    }, 1000)
 }
 
 function renderArtCategories() {
