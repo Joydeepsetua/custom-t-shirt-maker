@@ -100,11 +100,13 @@ if (designContainer) {
                     scaleY: 0.2,
                 });
                 canvas.add(img);
+                canvas.renderAll();
             });
         });
         reader.readAsDataURL(file);
-        canvas.renderAll.bind(canvas);
-        renderHistory();
+        setTimeout(() => {
+            renderHistory()
+        }, 1000)
     });
 }
 
@@ -412,8 +414,12 @@ function addArtInContainer(file) {
             scaleY: 0.2,
         });
         canvas.add(img);
+        canvas.renderAll();
     });
-    renderHistory();
+    setTimeout(() => {
+        renderHistory()
+    }, 1000)
+
 }
 
 function renderHistory() {
