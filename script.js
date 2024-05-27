@@ -5,6 +5,7 @@ const letterSpacing = document.getElementById("letter-spacing");
 const textOutline = document.getElementById("text-outline");
 const canva = document.getElementById('canvas');
 const imageElement = document.getElementById('image-element');
+const historyElement = document.getElementById('history');
 var canvas = new fabric.Canvas(canva);
 var textbox = new fabric.Textbox("", { top: 10, left: 10, fontSize: 14 });
 const categoryTextElement = document.getElementById('categories-text');
@@ -93,6 +94,8 @@ if (designContainer) {
             });
         });
         reader.readAsDataURL(file);
+        canvas.renderAll.bind(canvas);
+        renderHistory();
     });
 }
 
@@ -324,7 +327,8 @@ function insertImageAstshirtEditor(item) {
     $('#exampleModalCenter').modal('hide');
     designContainer.style.height = item.containerStyleHeight;
     designContainer.style.width = item.containerStyleWidth;
-    switchCanvas(item.key)
+    switchCanvas(item.key);
+    renderHistory();
 }
 
 function renderArtCategories() {
@@ -386,8 +390,44 @@ function addArtInContainer(file) {
         });
         canvas.add(img);
     });
+    renderHistory();
 }
 
+function renderHistory() {
+    var items = canvas.getObjects();
+    historyElement.innerHTML = '';
+    items.forEach((item, index) => {
+        const itemDetails = document.createElement('div');
+        var content = '';
+        if (item.type === 'image') {
+            content = `
+                <div class="row align-items-center justify-content-between mr-3 ml-5">
+                    <img src="${item.getSrc()}" alt="" height="50", width="50">
+                    <div style="cursor: pointer;" onclick="deleteSelectedObject()">
+                        <i class="fas fa-trash-alt"></i>
+                    </div>
+                </div>
+                <hr>
+        `;
+            // itemDetails.textContent = `Item ${index + 1}: ${item.type}, left: ${item.left}, top: ${item.top}, src: ${item.getSrc()}`;
+        } else if (item.type === 'textbox') {
+            content = `
+                <div class="row align-items-center justify-content-between mr-3 ml-5">
+                    <input type="text" value="${item.text}"/>
+                    <div style="cursor: pointer;" onclick="deleteSelectedObject()">
+                        <i class="fas fa-trash-alt"></i>
+                    </div>
+                </div>
+                <hr>
+        `;
+            // itemDetails.textContent = `Item ${index + 1}: ${item.type}, left: ${item.left}, top: ${item.top}, text: ${item.text}, fontSize: ${item.fontSize}, fill: ${item.fill}`;
+        } else {
+            // itemDetails.textContent = `Item ${index + 1}: ${item.type}, left: ${item.left}, top: ${item.top}`;
+        }
+        itemDetails.innerHTML = content;
+        historyElement.appendChild(itemDetails);
+    });
+}
 // delete selected canvas
 function deleteSelectedObject() {
     const activeObject = canvas.getActiveObject();
@@ -397,3 +437,12 @@ function deleteSelectedObject() {
         canvas.renderAll();
     }
 }
+
+// canvas.on('mouse:dblclick', function (options) {
+//     console.log(options);
+//     if (options.target && options.target.type === 'textbox') {
+//         const textObject = options.target;
+//         textObject.enterEditing();
+//         textObject.selectAll();
+//     }
+// });
