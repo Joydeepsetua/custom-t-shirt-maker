@@ -7,10 +7,19 @@ const canva = document.getElementById('canvas');
 const imageElement = document.getElementById('image-element');
 const historyElement = document.getElementById('history');
 var canvas = new fabric.Canvas(canva);
-var textbox = new fabric.Textbox("", { top: 10, left: 10, fontSize: 14 });
 const categoryTextElement = document.getElementById('categories-text');
 const canvasStates = {};
+var textbox = null;
 var currentSide = '';
+const toolbarOptions = [
+    [{ 'size': ['small', false, 'large', 'huge'] }],
+    [{ 'font': ['serif', 'monospace'] }],
+    ['bold', 'italic'],
+    [{ 'align': [] }],
+    ['clean'],
+    [{ 'color': [] }, { 'background': [] }],
+];
+
 const tshirtList = [
     {
         title: 'Front',
@@ -99,6 +108,14 @@ if (designContainer) {
     });
 }
 
+function addTextBox() {
+    quill.root.innerHTML = '<p>Add text</p>';
+    var newTextbox = new fabric.Textbox("Add text", { top: 10, left: 10, fontSize: 14 });
+    canvas.add(newTextbox);
+    textbox = newTextbox;
+    renderHistory();
+}
+
 // function allowDrop(ev) {
 //     ev.preventDefault();
 // }
@@ -127,7 +144,7 @@ $(document).ready(function () {
     });
 
     $("#design-text").click(function () {
-        canvas.add(textbox);
+        addTextBox();
         $("#edit-text").show();
         $("#create-your-design").hide();
     });
@@ -153,22 +170,16 @@ $(document).ready(function () {
 
 letterSpacing.addEventListener("input", function () {
     var value = letterSpacing.value;
-    adjustLetterSpacing(textbox, value);
+    if (textbox)
+        adjustLetterSpacing(textbox, value);
 });
 
 textOutline.addEventListener("input", function () {
     var value = textOutline.value;
-    taextOutline(textbox, value);
+    if (textbox)
+        taextOutline(textbox, value);
 });
 
-const toolbarOptions = [
-    [{ 'size': ['small', false, 'large', 'huge'] }],
-    [{ 'font': ['serif', 'monospace'] }],
-    ['bold', 'italic'],
-    [{ 'align': [] }],
-    ['clean'],
-    [{ 'color': [] }, { 'background': [] }],
-];
 const quill = new Quill('#text-editor', {
     theme: 'snow',
     modules: {
@@ -184,59 +195,59 @@ quill.root.innerHTML = '<p>Add text</p>';
 
 quill.on('text-change', function (delta, oldDelta, source) {
     const text = quill.getContents();
-    textbox.set('text', text.ops[0].insert);
+    if (textbox) {
+        textbox.set('text', text.ops[0].insert);
 
-    var attributes1 = text?.ops[0]?.attributes || {};
-    var attributes2 = text?.ops[1]?.attributes || {};
-    // console.log('1', attributes1);
-    // console.log('2', attributes2);
+        var attributes1 = text?.ops[0]?.attributes || {};
+        var attributes2 = text?.ops[1]?.attributes || {};
 
-    if (attributes1.hasOwnProperty('size')) {
-        letterSpacing.value = 1;
-        if (attributes1.size === 'small') {
-            textbox.set('fontSize', 10);
-        } else if (attributes1.size === 'large') {
-            textbox.set('fontSize', 20);
-        } else if (attributes1.size === 'huge') {
-            textbox.set('fontSize', 30);
+        if (attributes1.hasOwnProperty('size')) {
+            letterSpacing.value = 1;
+            if (attributes1.size === 'small') {
+                textbox.set('fontSize', 10);
+            } else if (attributes1.size === 'large') {
+                textbox.set('fontSize', 20);
+            } else if (attributes1.size === 'huge') {
+                textbox.set('fontSize', 30);
+            } else {
+                textbox.set('fontSize', 14);
+            }
         } else {
             textbox.set('fontSize', 14);
         }
-    } else {
-        textbox.set('fontSize', 14);
-    }
 
-    if (attributes1.hasOwnProperty('bold') || attributes1.bold) {
-        textbox.set('fontWeight', 'bold');
-    } else {
-        textbox.set('fontWeight', 'normal');
-    }
-    if (attributes1.hasOwnProperty('italic') || attributes1.italic) {
-        textbox.set('fontStyle', 'italic');
-    } else {
-        textbox.set('fontStyle', 'normal');
-    }
-    if (attributes1.hasOwnProperty('color')) {
-        textbox.set('fill', attributes1.color);
-    } else {
-        textbox.set('fill', '#000');
-    }
-    if (attributes1.hasOwnProperty('background')) {
-        textbox.set('backgroundColor', attributes1.background);
-    } else {
-        textbox.set('backgroundColor', '');
-    }
-    if (attributes1.hasOwnProperty('font')) {
-        console.log(attributes1.font);
-        textbox.set('fontFamily', attributes1.font);
-    } else {
-        textbox.set('fontFamily', 'serif');
-    }
-    if (attributes2.hasOwnProperty('align')) {
-        textbox.set('textAlign', attributes2.align);
-    }
+        if (attributes1.hasOwnProperty('bold') || attributes1.bold) {
+            textbox.set('fontWeight', 'bold');
+        } else {
+            textbox.set('fontWeight', 'normal');
+        }
+        if (attributes1.hasOwnProperty('italic') || attributes1.italic) {
+            textbox.set('fontStyle', 'italic');
+        } else {
+            textbox.set('fontStyle', 'normal');
+        }
+        if (attributes1.hasOwnProperty('color')) {
+            textbox.set('fill', attributes1.color);
+        } else {
+            textbox.set('fill', '#000');
+        }
+        if (attributes1.hasOwnProperty('background')) {
+            textbox.set('backgroundColor', attributes1.background);
+        } else {
+            textbox.set('backgroundColor', '');
+        }
+        if (attributes1.hasOwnProperty('font')) {
+            textbox.set('fontFamily', attributes1.font);
+        } else {
+            textbox.set('fontFamily', 'serif');
+        }
+        if (attributes2.hasOwnProperty('align')) {
+            textbox.set('textAlign', attributes2.align);
+        }
 
-    canvas.renderAll();
+        canvas.renderAll();
+    }
+    renderHistory()
 });
 
 // adjustLetterSpacing(textbox, 10);
@@ -259,22 +270,28 @@ function taextOutline(ref, value) {
 
 function textFlipX() {
     // Flip horizontally
-    textbox.set('flipX', !xFlip);
-    xFlip = !xFlip;
-    canvas.renderAll();
+    if (textbox) {
+        textbox.set('flipX', !xFlip);
+        xFlip = !xFlip;
+        canvas.renderAll();
+    }
 }
 
 function textFlipY() {
     // Flip vertically
-    textbox.set('flipY', !yFlip);
-    yFlip = !yFlip;
-    canvas.renderAll();
+    if (textbox) {
+        textbox.set('flipY', !yFlip);
+        yFlip = !yFlip;
+        canvas.renderAll();
+    }
 }
-function duplicate(ref) {
-    canvas.add(textbox);
-    ref.set('top', 10);
-    ref.set('left', 10);
-}
+// function duplicate(ref) {
+//     if (textbox) {
+//         canvas.add(textbox);
+//         ref.set('top', 10);
+//         ref.set('left', 10);
+//     }
+// }
 // quill.on('selection-change', (range, oldRange, source) => {
 //     if (range) {
 //       if (range.length == 0) {
@@ -309,6 +326,10 @@ function renderTshirts() {
     });
 }
 function switchCanvas(side) {
+    $("#image-selector").hide();
+    $("#edit-text").hide();
+    $("#art-selector").hide();
+    $("#create-your-design").show();
     if (canvasStates[side]) {
         canvas.loadFromJSON(canvasStates[side], canvas.renderAll.bind(canvas));
     } else {
@@ -403,8 +424,13 @@ function renderHistory() {
             content = `
                 <div class="row align-items-center justify-content-between mr-3 ml-5">
                     <img src="${item.getSrc()}" alt="" height="50", width="50">
-                    <div style="cursor: pointer;" onclick="deleteSelectedObject()">
-                        <i class="fas fa-trash-alt"></i>
+                    <div class="row align-items-center justify-content-between">
+                        <div style="cursor: pointer; margin:10px" onclick="editSelectedObject(${index})">
+                            <i class="fas fa-pen"></i>
+                        </div>
+                        <div style="cursor: pointer; margin:10px" onclick="deleteSelectedObject(${index})">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
                     </div>
                 </div>
                 <hr>
@@ -413,14 +439,18 @@ function renderHistory() {
         } else if (item.type === 'textbox') {
             content = `
                 <div class="row align-items-center justify-content-between mr-3 ml-5">
-                    <input type="text" value="${item.text}"/>
-                    <div style="cursor: pointer;" onclick="deleteSelectedObject()">
-                        <i class="fas fa-trash-alt"></i>
+                    <p>${item.text}</p>
+                    <div class="row align-items-center justify-content-between">
+                        <div style="cursor: pointer; margin:10px" onclick="editSelectedObject(${index})">
+                            <i class="fas fa-pen"></i>
+                        </div>
+                        <div style="cursor: pointer; margin:10px" onclick="deleteSelectedObject(${index})">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
                     </div>
                 </div>
                 <hr>
         `;
-            // itemDetails.textContent = `Item ${index + 1}: ${item.type}, left: ${item.left}, top: ${item.top}, text: ${item.text}, fontSize: ${item.fontSize}, fill: ${item.fill}`;
         } else {
             // itemDetails.textContent = `Item ${index + 1}: ${item.type}, left: ${item.left}, top: ${item.top}`;
         }
@@ -429,13 +459,35 @@ function renderHistory() {
     });
 }
 // delete selected canvas
-function deleteSelectedObject() {
-    const activeObject = canvas.getActiveObject();
-    if (activeObject) {
-        canvas.remove(activeObject);
+function deleteSelectedObject(index) {
+    var item = canvas.getObjects()[index];
+    if (item) {
+        canvas.remove(item);
         canvas.discardActiveObject();
         canvas.renderAll();
     }
+    renderHistory()
+}
+
+//edit selected canvas
+function editSelectedObject(index) {
+    var item = canvas.getObjects()[index];
+    textbox = item
+    updateQuill(item)
+    if (item) {
+        canvas.setActiveObject(item);
+        if (item.type === 'textbox') {
+            // item.enterEditing();
+            // item.hiddenTextarea.focus();
+            $("#edit-text").show();
+            $("#create-your-design").hide();
+        }
+        canvas.renderAll();
+    }
+}
+
+function updateQuill(item) {
+    quill.root.innerHTML = `<p>${item.text}</p>`;
 }
 
 // canvas.on('mouse:dblclick', function (options) {
@@ -446,3 +498,7 @@ function deleteSelectedObject() {
 //         textObject.selectAll();
 //     }
 // });
+canvas.on('object:selected', (e) => {
+    const selectedObject = e.target;
+    selectedObject.bringToFront();
+});
