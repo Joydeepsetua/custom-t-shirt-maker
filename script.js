@@ -25,40 +25,40 @@ const tshirtList = [
         title: 'Front',
         key: 'front',
         image: './images/t-shirt.png',
-        containerStyleHeight: '180px',
-        containerStyleWidth: '180px',
-        containerWidth: 180,
-        containerHeight: 180,
+        containerStyleHeight: '200px',
+        containerStyleWidth: '200px',
+        containerWidth: 200,
+        containerHeight: 200,
         position: ''
     },
     {
         title: 'Back',
         key: 'back',
         image: './images/t-shirt-back.png',
-        containerStyleHeight: '180px',
-        containerStyleWidth: '180px',
-        containerWidth: 180,
-        containerHeight: 180,
+        containerStyleHeight: '200px',
+        containerStyleWidth: '200px',
+        containerWidth: 200,
+        containerHeight: 200,
         position: ''
     },
     {
         title: 'Left Sleeve',
         key: 'left',
         image: './images/t-shirt-left.png',
-        containerStyleHeight: '85px',
-        containerStyleWidth: '85px',
-        containerWidth: 85,
-        containerHeight: 85,
+        containerStyleHeight: '100px',
+        containerStyleWidth: '100px',
+        containerWidth: 100,
+        containerHeight: 100,
         position: ''
     },
     {
         title: 'Right Sleeve',
         key: 'right',
         image: './images/t-shirt-right.png',
-        containerStyleHeight: '85px',
-        containerStyleWidth: '85px',
-        containerWidth: 85,
-        containerHeight: 85,
+        containerStyleHeight: '100px',
+        containerStyleWidth: '100px',
+        containerWidth: 100,
+        containerHeight: 100,
         position: ''
     },
 ]
@@ -111,8 +111,8 @@ if (designContainer) {
 }
 // <--------------------- Setting fabric for allow new key "html" ----------------------------->
 // Extend fabric.Textbox to include the 'html' property in the serialization process
-fabric.Textbox.prototype.toObject = (function(toObject) {
-    return function() {
+fabric.Textbox.prototype.toObject = (function (toObject) {
+    return function () {
         return fabric.util.object.extend(toObject.call(this), {
             html: this.html
         });
@@ -120,9 +120,9 @@ fabric.Textbox.prototype.toObject = (function(toObject) {
 })(fabric.Textbox.prototype.toObject);
 
 // Extend fabric.Textbox to include the 'html' property in the deserialization process
-fabric.Textbox.fromObject = (function(fromObject) {
-    return function(object, callback) {
-        return fromObject.call(this, object, function(instance) {
+fabric.Textbox.fromObject = (function (fromObject) {
+    return function (object, callback) {
+        return fromObject.call(this, object, function (instance) {
             if (object.html) {
                 instance.html = object.html;
             }
@@ -197,12 +197,14 @@ letterSpacing.addEventListener("input", function () {
     var value = letterSpacing.value;
     if (textbox)
         adjustLetterSpacing(textbox, value);
+    saveState()
 });
 
 textOutline.addEventListener("input", function () {
     var value = textOutline.value;
     if (textbox)
         taextOutline(textbox, value);
+    saveState()
 });
 
 const quill = new Quill('#text-editor', {
@@ -273,7 +275,8 @@ quill.on('text-change', function (delta, oldDelta, source) {
 
         canvas.renderAll();
     }
-    renderHistory()
+    renderHistory();
+    saveState();
 });
 
 // adjustLetterSpacing(textbox, 10);
@@ -300,6 +303,7 @@ function textFlipX() {
         textbox.set('flipX', !xFlip);
         xFlip = !xFlip;
         canvas.renderAll();
+        saveState()
     }
 }
 
@@ -309,6 +313,7 @@ function textFlipY() {
         textbox.set('flipY', !yFlip);
         yFlip = !yFlip;
         canvas.renderAll();
+        saveState()
     }
 }
 // function duplicate(ref) {
@@ -577,9 +582,12 @@ var historyLimit = 10; // Optional: Limit the number of states stored
 
 // Save the current state of the canvas
 function saveState() {
-    redoStack = []; // Clear the redo stack whenever a new action is performed
     const state = JSON.stringify(canvas.toJSON());
-    undoStack.push(state);
+    if (state !== undoStack[undoStack.length - 1]) {
+        if (state !== redoStack[redoStack.length - 1])
+            redoStack = [];
+        undoStack.push(state);
+    }
     if (undoStack.length > historyLimit) {
         undoStack.shift(); // Remove the oldest state if the limit is exceeded
     }
@@ -587,28 +595,30 @@ function saveState() {
 
 // Undo the last action
 function undo() {
-    if (undoStack.length > 0) {
+    $("#image-selector").hide();
+    $("#edit-text").hide();
+    $("#art-selector").hide();
+    $("#create-your-design").show();
+    if (undoStack.length > 1) {
         const currentState = JSON.stringify(canvas.toJSON());
         redoStack.push(currentState);
-
-        const previousState = undoStack.pop();
-        canvas.loadFromJSON(previousState, function () {
-            canvas.renderAll();
-        });
+        undoStack.pop();
+        canvas.loadFromJSON(undoStack[undoStack.length - 1], canvas.renderAll.bind(canvas));
         renderHistory();
     }
 }
 
 // Redo the last undone action
 function redo() {
+    $("#image-selector").hide();
+    $("#edit-text").hide();
+    $("#art-selector").hide();
+    $("#create-your-design").show();
     if (redoStack.length > 0) {
-        const currentState = JSON.stringify(canvas.toJSON());
-        undoStack.push(currentState);
-
-        const nextState = redoStack.pop();
-        canvas.loadFromJSON(nextState, function () {
-            canvas.renderAll();
-        });
+        // const currentState = JSON.stringify(canvas.toJSON());
+        // undoStack.push(currentState);
+        canvas.loadFromJSON(redoStack[redoStack.length - 1], canvas.renderAll.bind(canvas));
+        redoStack.pop();
         renderHistory();
     }
 }
@@ -617,6 +627,3 @@ function redo() {
 canvas.on('object:added', saveState);
 canvas.on('object:modified', saveState);
 canvas.on('object:removed', saveState);
-
-// Optional: Initial state
-saveState();

@@ -11,7 +11,10 @@ body {}
     position: relative;
 }
 
-.third-col {}
+.third-col {
+    overflow-y: scroll;
+    height: 85vh;
+}
 
 #design-container {
     position: absolute;
