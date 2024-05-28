@@ -109,6 +109,28 @@ if (designContainer) {
         }, 1000)
     });
 }
+// <--------------------- Setting fabric for allow new key "html" ----------------------------->
+// Extend fabric.Textbox to include the 'html' property in the serialization process
+fabric.Textbox.prototype.toObject = (function(toObject) {
+    return function() {
+        return fabric.util.object.extend(toObject.call(this), {
+            html: this.html
+        });
+    };
+})(fabric.Textbox.prototype.toObject);
+
+// Extend fabric.Textbox to include the 'html' property in the deserialization process
+fabric.Textbox.fromObject = (function(fromObject) {
+    return function(object, callback) {
+        return fromObject.call(this, object, function(instance) {
+            if (object.html) {
+                instance.html = object.html;
+            }
+            callback && callback(instance);
+        });
+    };
+})(fabric.Textbox.fromObject);
+// <--------------------- End setting fabric for allow new key "html" ----------------------------->
 
 function addTextBox() {
     quill.root.innerHTML = '<p>Add text</p>';
@@ -536,7 +558,15 @@ canvas.on('object:selected', (e) => {
     selectedObject.bringToFront();
 });
 
-
+// Zoom functions
+function zoomInCanvas() {
+    const zoom = canvas.getZoom();
+    canvas.setZoom(zoom * 1.1);
+}
+function zoomOutCanvas() {
+    const zoom = canvas.getZoom();
+    canvas.setZoom(zoom * 0.9);
+}
 
 
 // <------------------------------- Undo - Redo Functionality ------------------------------->
